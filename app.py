@@ -13,17 +13,15 @@ config = configparser.ConfigParser()
 config.read(pwd / "conf/app.ini")
 default_config = config['DEFAULT']
 
-test = default_config['test']
-
 @app.route('/calculate_dscr')
 def my_form():
     return render_template('refinance.html',
-                           pp_value = "100000", 
-                           ap_value = "150000", 
-                           rent_value = "1500",
-                           taxes_value = "500",
-                           insurance_value = "500",
-                           interest_rate_value = "7.5")
+                           pp_value = default_config["purchase_price"], 
+                           ap_value = default_config["appraised_value"], 
+                           rent_value = default_config["rent"],
+                           taxes_value = default_config["taxes"],
+                           insurance_value = default_config["insurance"],
+                           interest_rate_value =default_config["interest_rate"])
 
 @app.route('/calculate_dscr', methods=['POST'])
 def my_form_post():
@@ -35,7 +33,7 @@ def my_form_post():
     refi.set_prop_taxes(int(request.form['taxes']))
     refi.set_interest_rate(float(request.form['interest_rate']))
     
-    refi.set_monthly_payment(amoritization=25)
+    refi.set_monthly_payment(amoritization=int(default_config["amoritization"]))
     actual_dscr = refi.calculate_dscr()
     return render_template("refinance.html",  
                            pp_value = purchase_price, 
@@ -44,20 +42,15 @@ def my_form_post():
                            taxes_value = refi.prop_taxes,
                            insurance_value = refi.insurance,
                            interest_rate_value = refi.interest_rate,
-                           MONTHLY_PAYMENT = refi.monthly_payment,
-                           DSCR_RATIO = f"DSCR: {actual_dscr}", 
+                           MONTHLY_PAYMENT = f"Monthly Payment: ${round(refi.monthly_payment, 2)}",
+                           CASH_ON_CASH_RETURNS = f"Cash on Cash: {round(refi.calculate_cash_on_cash(), 2)}%",
+                           DSCR_RATIO = f"DSCR: {round(actual_dscr, 2)}", 
                            FEASIBILITY = f" Feasible?: {refi.determine_feasibility(actual_dscr=actual_dscr)}")
-
-
 
 @app.route("/", methods=['GET', 'POST'])
 def func():
-    refi = Refinance(150000, 180000, 1500)
-    return f"<p>Hello, World! {refi.calculate_dscr()}</p>"
+    return f"<p>Sup brah</p>"
 
-
-def refi_calculate(appraised_value, original_purchase_price, current_equity):
-    return
 
 if __name__ == '__main__':
     app.run()
