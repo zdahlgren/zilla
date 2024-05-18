@@ -1,0 +1,20 @@
+<form method="POST">
+    <input type="number" id="pp" min="0" max="1000000" value="{{pp_value}}" name="purchase_price">
+    <label for="pp">Purchase Price</label><br>
+    <input type="number" id="ap" min="0" max="1000000" value="{{ap_value}}" name="appraised_value">
+    <label for="ap">Appraised Value</label><br>
+    <input type="number" id="target_rent" min="0" max="10000" value="{{rent_value}}" name="target_rent">
+    <label for="target_rent">Target Rent</label><br>
+    <input type="taxes" id="taxes" min="0" max="10000" value="{{taxes_value}}" name="taxes">
+    <label for="taxes">Property Tax</label><br>
+    <input type="number" id="insurance" min="0" max="10000" value="{{insurance_value}}" name="insurance">
+    <label for="insurance">Insurance</label><br>
+    <input type="number" id="interest_rate" min="0" max="10" value="{{interest_rate_value}}" step="0.01" name="interest_rate">
+    <label for="interest_rate">Interest Rate</label><br>
+    <input type="submit">
+</form>
+<td>{{MONTHLY_PAYMENT}}</td>
+<br></br>
+<td>{{DSCR_RATIO}}</td>
+<br></br>
+<td>{{FEASIBILITY}}</td>

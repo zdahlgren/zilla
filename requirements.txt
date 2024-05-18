@@ -1,0 +1,4 @@
+configparser
+flask
+requests
+numpy_financial
