@@ -1,6 +1,19 @@
+<html>
+<style>
+body {
+  font-size: 12px;
+  font-family: Verdana, sans-serif;
+}
+</style>
+<body>
+
+<span style="font-size:40px; font-family: 'Courier New', monospace;">&#129297; DSCR Calculator &#129297;</span>
+
 <form method="POST">
     <input type="number" id="pp" min="0" max="1000000" value="{{pp_value}}" name="purchase_price">
     <label for="pp">Purchase Price</label><br>
+    <input type="number" id="equity" min="0" max="1000000" value="{{equity_value}}" name="equity">
+    <label for="ap">Existing Equity</label><br>
     <input type="number" id="ap" min="0" max="1000000" value="{{ap_value}}" name="appraised_value">
     <label for="ap">Appraised Value</label><br>
     <input type="number" id="target_rent" min="0" max="10000" value="{{rent_value}}" name="target_rent">
@@ -19,4 +32,20 @@
 <br></br>
 <td>{{DSCR_RATIO}}</td>
 <br></br>
-<td>{{FEASIBILITY}}</td>
+<td><b>{{FEASIBILITY}}</b></td>
+<br></br>
+<td>{{CASHOUT}}</td>
+<br></br>
+<br></br>
+<td><b>{{WORKABLE_SCENARIOS}}</b></td>
+<br></br>
+<td>{{HAPPY_NET}}</td>
+<br></br>
+<td>{{HAPPY_RENT_INCREASE}}</td>
+<br></br>
+<td>{{HAPPY_MONTHLY_PAYMENT}}</td>
+<br></br>
+<td>{{HAPPY_LTV}}</td>
+
+</body>
+</html>
