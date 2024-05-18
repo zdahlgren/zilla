@@ -48,9 +48,9 @@ def my_form_post():
     if not refi.is_feasible(actual_dscr):
         happy_tup = refi.happy_path_scenarios(amoritization=int(default_config["amoritization"]))
         workable_scenarios = f"To make numbers work at {refi.target_dscr} DSCR, you would need one of the following:" 
-        happy_net = f"New Net: ${round(happy_tup[0], 2)}" 
-        happy_rent = f"Rent Increase: ${round(happy_tup[1], 2)}" 
-        happy_monthly_payment = f"Happy Monthly Payment: ${round(happy_tup[2], 2)}"
+        happy_net = f"Yearly Net: ${round(happy_tup[0], 2)}" 
+        happy_rent = f"Monthly Rent Increase: ${round(happy_tup[1], 2)}" 
+        happy_monthly_payment = f"Monthly Payment: ${round(happy_tup[2], 2)}"
         happy_ltv = f"LTV: {round(happy_tup[3], 2)}%"
     else:
         cashout_amount = (refi.appraised_value - refi.purchase_price) - ( (refi.appraised_value * (1-refi.ltv) - refi.equity)) - (refi.appraised_value * refi.refi_fee_rate)
