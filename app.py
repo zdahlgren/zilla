@@ -37,6 +37,7 @@ def my_form_post():
     refi.set_interest_rate(float(request.form['interest_rate']))
     
     refi.set_monthly_payment(amoritization=int(default_config["amoritization"]))
+    refi.set_gross_net_and_expenses()
     actual_dscr = refi.calculate_dscr()
 
     workable_scenarios = ""
@@ -49,12 +50,17 @@ def my_form_post():
         happy_tup = refi.happy_path_scenarios(amoritization=int(default_config["amoritization"]))
         workable_scenarios = f"To make numbers work at {refi.target_dscr} DSCR, you would need one of the following:" 
         happy_net = f"Yearly Net: ${round(happy_tup[0], 2)}" 
-        happy_rent = f"Monthly Rent Increase: ${round(happy_tup[1], 2)}" 
+        new_total_rent = round(happy_tup[1], 2)
+        increase = round(new_total_rent - round(refi.rent,2), 2)
+        happy_rent = f"Monthly Rent: ${new_total_rent} (increase of ${increase})" 
         happy_monthly_payment = f"Monthly Payment: ${round(happy_tup[2], 2)}"
-        happy_ltv = f"LTV: {round(happy_tup[3], 2)}%"
+        happy_ltv = f"LTV: {happy_tup[3]*100}%"
     else:
         cashout_amount = (refi.appraised_value - refi.purchase_price) - ( (refi.appraised_value * (1-refi.ltv) - refi.equity)) - (refi.appraised_value * refi.refi_fee_rate)
-        cashout = f"Cashout: ${round(cashout_amount, 2)}"
+        if cashout_amount > 0:
+            cashout = f"Cashout: ${round(cashout_amount, 2)}"
+        else:
+            cashout = f"Warning! You won't be able to pull any cash out of this property"
 
     return render_template("refinance.html",  
                            pp_value = purchase_price, 
@@ -65,13 +71,16 @@ def my_form_post():
                            insurance_value = refi.insurance,
                            interest_rate_value = refi.interest_rate,
                            MONTHLY_PAYMENT = f"Monthly Payment: ${round(refi.monthly_payment, 2)}",
+                           GROSS = f"Yearly Gross: ${round(refi.gross, 2)}",
+                           EXPENSES = f"Yearly Expenses: ${round(refi.expenses, 2)}",
+                           NET = f"Yearly Net: ${round(refi.net, 2)}",
                            CASH_ON_CASH_RETURNS = f"Cash on Cash: {round(refi.calculate_cash_on_cash(), 2)}%",
                            DSCR_RATIO = f"DSCR: {round(actual_dscr, 2)}", 
                            FEASIBILITY = f"Feasible?: {refi.is_feasible(actual_dscr=actual_dscr)}",
                            CASHOUT = cashout,
                            WORKABLE_SCENARIOS = workable_scenarios,
                            HAPPY_NET = happy_net,
-                           HAPPY_RENT_INCREASE = happy_rent,
+                           HAPPY_RENT = happy_rent,
                            HAPPY_MONTHLY_PAYMENT = happy_monthly_payment,
                            HAPPY_LTV = happy_ltv
                            )

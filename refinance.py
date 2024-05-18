@@ -63,23 +63,28 @@ class Refinance:
         except:
             return 0
         
+    def calculate_happy_rent(self, happy_net, gross):
+        if gross <= happy_net + (gross * self.vacancy) + (gross * self.management) + (gross * self.maintenance):
+            return self.calculate_happy_rent(happy_net, gross+10)
+        else:
+            return gross
+        
+
     def happy_path_scenarios(self, amoritization):
-        self.set_gross_net_and_expenses()
         happy_net = (12 * self.monthly_payment) * self.target_dscr
-        happy_rent_increase = (happy_net - self.net) / 12
+        happy_rent = self.calculate_happy_rent(happy_net, self.gross) / 12#(happy_net - self.net) / 12 # + (self.gross * self.management) + (self.gross * self.maintenance))/12
         happy_monthly_payment = (self.net / self.target_dscr ) /12
         happy_ltv = self.find_happy_ltv(self.ltv, amoritization, happy_monthly_payment)
-        return(happy_net, happy_rent_increase, happy_monthly_payment, happy_ltv)
+        return(happy_net, happy_rent, happy_monthly_payment, happy_ltv)
     
     def find_happy_ltv(self, ltv, amoritization, happy_monthly_payment):
         value = -npf.pmt((self.interest_rate / 100)/12, amoritization *12, self.appraised_value * ltv) 
         value += (self.insurance/12) 
         value += (self.prop_taxes/12)
         if happy_monthly_payment < value:
-            happy_ltv = self.find_happy_ltv((ltv - 0.05), amoritization+10, happy_monthly_payment)
+            return self.find_happy_ltv((ltv - 0.05), amoritization+10, happy_monthly_payment)
         else:
-            happy_ltv = ltv
-        return happy_ltv
+            return ltv
     
     def calculate_cash_on_cash(self):
         income = self.net - self.monthly_payment*12

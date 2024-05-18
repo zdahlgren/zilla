@@ -1,4 +1,5 @@
 <html>
+    <link rel="icon" type="image/jpg" href="{{url_for('static', filename='zilla.jpg')}}" sizes="16x16">
 <style>
 body {
   font-size: 12px;
@@ -28,6 +29,12 @@ body {
 </form>
 <td>{{MONTHLY_PAYMENT}}</td>
 <br></br>
+<td>{{GROSS}}</td>
+<br></br>
+<td>{{EXPENSES}}</td>
+<br></br>
+<td>{{NET}}</td>
+<br></br>
 <td>{{CASH_ON_CASH_RETURNS}}</td>
 <br></br>
 <td>{{DSCR_RATIO}}</td>
@@ -41,7 +48,7 @@ body {
 <br></br>
 <td>{{HAPPY_NET}}</td>
 <br></br>
-<td>{{HAPPY_RENT_INCREASE}}</td>
+<td>{{HAPPY_RENT}}</td>
 <br></br>
 <td>{{HAPPY_MONTHLY_PAYMENT}}</td>
 <br></br>
