@@ -44,6 +44,7 @@ def my_form_post():
     happy_rent = "" 
     happy_monthly_payment = ""
     happy_ltv = ""
+    cashout = ""
     if not refi.is_feasible(actual_dscr):
         happy_tup = refi.happy_path_scenarios(amoritization=int(default_config["amoritization"]))
         workable_scenarios = f"To make numbers work at {refi.target_dscr} DSCR, you would need one of the following:" 
@@ -52,7 +53,8 @@ def my_form_post():
         happy_monthly_payment = f"Happy Monthly Payment: ${round(happy_tup[2], 2)}"
         happy_ltv = f"LTV: {round(happy_tup[3], 2)}%"
     else:
-        cashout = (refi.appraised_value - refi.purchase_price) - ( (refi.appraised_value * (1-refi.ltv) - refi.equity)) - (refi.appraised_value * refi.refi_fee_rate)
+        cashout_amount = (refi.appraised_value - refi.purchase_price) - ( (refi.appraised_value * (1-refi.ltv) - refi.equity)) - (refi.appraised_value * refi.refi_fee_rate)
+        cashout = f"Cashout: ${round(cashout_amount, 2)}"
 
     return render_template("refinance.html",  
                            pp_value = purchase_price, 
@@ -66,7 +68,7 @@ def my_form_post():
                            CASH_ON_CASH_RETURNS = f"Cash on Cash: {round(refi.calculate_cash_on_cash(), 2)}%",
                            DSCR_RATIO = f"DSCR: {round(actual_dscr, 2)}", 
                            FEASIBILITY = f"Feasible?: {refi.is_feasible(actual_dscr=actual_dscr)}",
-                           CASHOUT = f"Cashout: ${round(cashout, 2)}",
+                           CASHOUT = cashout,
                            WORKABLE_SCENARIOS = workable_scenarios,
                            HAPPY_NET = happy_net,
                            HAPPY_RENT_INCREASE = happy_rent,
