@@ -78,7 +78,7 @@ def my_form_post():
 
 @app.route("/", methods=['GET', 'POST'])
 def func():
-    return f"<p>Sup brah</p>"
+    return render_template("welcome.html")
 
 
 if __name__ == '__main__':
