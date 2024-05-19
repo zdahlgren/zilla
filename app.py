@@ -22,7 +22,8 @@ def my_form():
                            rent_value = default_config["rent"],
                            taxes_value = default_config["taxes"],
                            insurance_value = default_config["insurance"],
-                           interest_rate_value =default_config["interest_rate"])
+                           interest_rate_value =default_config["interest_rate"],
+                           ltv =default_config["ltv"])
 
 @app.route('/calculate_dscr', methods=['POST'])
 def my_form_post():
@@ -35,6 +36,7 @@ def my_form_post():
     refi.set_insurance(int(request.form['insurance']))
     refi.set_prop_taxes(int(request.form['taxes']))
     refi.set_interest_rate(float(request.form['interest_rate']))
+    refi.set_ltv(float(request.form['ltv']))
     
     refi.set_monthly_payment(amoritization=int(default_config["amoritization"]))
     refi.set_gross_net_and_expenses()
@@ -54,7 +56,7 @@ def my_form_post():
         increase = round(new_total_rent - round(refi.rent,2), 2)
         happy_rent = f"Monthly Rent: ${new_total_rent} (increase of ${increase})" 
         happy_monthly_payment = f"Monthly Payment: ${round(happy_tup[2], 2)}"
-        happy_ltv = f"LTV: {happy_tup[3]*100}%"
+        happy_ltv = f"LTV: {round(happy_tup[3]*100, 2)}%"
     else:
         cashout_amount = (refi.appraised_value - refi.purchase_price) - ( (refi.appraised_value * (1-refi.ltv) - refi.equity)) - (refi.appraised_value * refi.refi_fee_rate)
         if cashout_amount > 0:
@@ -70,7 +72,9 @@ def my_form_post():
                            taxes_value = refi.prop_taxes,
                            insurance_value = refi.insurance,
                            interest_rate_value = refi.interest_rate,
-                           MONTHLY_PAYMENT = f"Monthly Payment: ${round(refi.monthly_payment, 2)}",
+                           ltv = refi.ltv,
+                           MORTGAGE_PAYMENT = f"Monthly Mortgage Payment: ${round(refi.mortgage, 2)}",
+                           TOTAL_PAYMENT = f"Total Monthly Payment: ${round(refi.monthly_payment, 2)}",
                            GROSS = f"Yearly Gross: ${round(refi.gross, 2)}",
                            EXPENSES = f"Yearly Expenses: ${round(refi.expenses, 2)}",
                            NET = f"Yearly Net: ${round(refi.net, 2)}",

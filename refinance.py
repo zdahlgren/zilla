@@ -43,9 +43,8 @@ class Refinance:
         self.ltv = ltv
     
     def set_monthly_payment(self, amoritization):
-        self.monthly_payment = -npf.pmt((self.interest_rate / 100)/12, amoritization *12, self.appraised_value * self.ltv)
-        self.monthly_payment += (self.insurance/12)
-        self.monthly_payment += (self.prop_taxes/12)
+        self.mortgage = -npf.pmt((self.interest_rate / 100)/12, amoritization *12, self.appraised_value * self.ltv)
+        self.monthly_payment = self.mortgage + (self.insurance/12) + (self.prop_taxes/12)
 
     def set_target_dscr(self, target_dscr):
         self.target_dscr = target_dscr
@@ -53,12 +52,12 @@ class Refinance:
     def set_gross_net_and_expenses(self):
         self.gross = self.rent * 12
         self.expenses = (self.gross * self.vacancy) + (self.gross * self.management) + (self.gross * self.maintenance)
-        self.net = self.gross - self.expenses
+        self.net = self.gross - (self.expenses + self.insurance + self.prop_taxes)
 
     def calculate_dscr(self):
         self.set_gross_net_and_expenses()
         try:
-            actual_dscr = self.net / (12 * self.monthly_payment)
+            actual_dscr = self.net / (12 * self.mortgage)
             return actual_dscr
         except:
             return 0
@@ -72,7 +71,7 @@ class Refinance:
 
     def happy_path_scenarios(self, amoritization):
         happy_net = (12 * self.monthly_payment) * self.target_dscr
-        happy_rent = self.calculate_happy_rent(happy_net, self.gross) / 12#(happy_net - self.net) / 12 # + (self.gross * self.management) + (self.gross * self.maintenance))/12
+        happy_rent = self.calculate_happy_rent(happy_net, self.gross) / 12
         happy_monthly_payment = (self.net / self.target_dscr ) /12
         happy_ltv = self.find_happy_ltv(self.ltv, amoritization, happy_monthly_payment)
         return(happy_net, happy_rent, happy_monthly_payment, happy_ltv)
@@ -87,7 +86,7 @@ class Refinance:
             return ltv
     
     def calculate_cash_on_cash(self):
-        income = self.net - self.monthly_payment*12
+        income = self.net - self.mortgage*12
         invested = (self.appraised_value * (1.0- self.ltv)) + (self.appraised_value*self.refi_fee_rate)
         return (income / invested)*100
 

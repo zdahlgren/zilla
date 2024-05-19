@@ -25,9 +25,13 @@ body {
     <label for="insurance">Insurance</label><br>
     <input type="number" id="interest_rate" min="0" max="10" value="{{interest_rate_value}}" step="0.01" name="interest_rate">
     <label for="interest_rate">Interest Rate</label><br>
+    <input type="number" id="ltv" min="0" max="10" value="{{ltv}}" step="0.01" name="ltv">
+    <label for="ltv">Loan to Value</label><br>
     <input type="submit">
 </form>
-<td>{{MONTHLY_PAYMENT}}</td>
+<td>{{MORTGAGE_PAYMENT}}</td>
+<br></br>
+<td>{{TOTAL_PAYMENT}}</td>
 <br></br>
 <td>{{GROSS}}</td>
 <br></br>
